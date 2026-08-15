@@ -7,3 +7,5 @@
 .hand.rare{animation:rareGlow 1.2s ease-in-out infinite alternate}
 @keyframes rareGlow{from{box-shadow:0 0 18px #f6c85322}to{box-shadow:0 0 55px #f6c85366}}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
+
+.auth-note{margin-top:12px;text-align:center;color:#7f998e;font-size:.78rem}

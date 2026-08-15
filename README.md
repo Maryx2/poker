@@ -4,7 +4,7 @@ React + Vite + Supabase + Netlify.
 
 ## Included
 
-- Email/password login and signup
+- Username/password login and signup (email hidden internally)
 - Persistent public player profiles
 - Public wins leaderboard
 - Career wins, losses, win rate, streaks, round stats and best hand
@@ -78,3 +78,22 @@ The frontend subscribes to Supabase Realtime Postgres changes for the current ro
 - Browser clients cannot directly insert/update game state, match history, or career stats.
 - Room data is protected by RLS and a security-definer membership helper to avoid recursive policies.
 - Profiles / leaderboard stats are intentionally public-readable; profile edits require the authenticated owner RPC.
+
+
+## Username/password authentication
+
+The UI does not request an email address.
+
+Supabase Auth still requires an email or phone identifier for password authentication, so the app internally maps usernames to a reserved address:
+
+`username@users.firstdice.invalid`
+
+Users never see or use that address.
+
+In Supabase Dashboard, you MUST disable:
+
+Authentication → Providers → Email → Confirm Email
+
+Otherwise Supabase will block immediate username/password login.
+
+Existing accounts that were created with real email addresses will not automatically map to the new username login scheme. Recreate those development accounts or migrate them separately.
