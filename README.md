@@ -1,102 +1,80 @@
-# First Dice
+# First Dice — Full Multiplayer Platform
 
-A multiplayer, one-roll dice poker game built with React + Vite, designed to deploy on Netlify and use Supabase for multiplayer state.
+React + Vite + Supabase + Netlify.
 
-## Game
+## Included
 
-Dealer and Player 2 each roll five dice once.
+- Email/password login and signup
+- Persistent public player profiles
+- Public wins leaderboard
+- Career wins, losses, win rate, streaks, round stats and best hand
+- Room codes and shareable Player / Audience links
+- Dealer/host, Player 2 and spectator roles
+- Ready system
+- Match formats: first to 2, 3, 5, 7 or 10
+- Server-authoritative dice rolls and scoring in Postgres
+- Match winner career-stat updates
+- Match / round history
+- Realtime game-state updates
+- Spectator reactions
+- Spectator count
+- Host lock and remove controls
+- Rematches
+- Reconnect heartbeat
+- Shared 3-2-1 roll countdown
+- Optional browser-generated game sounds
+- Rare-hand glow treatment
+- Responsive mobile UI
+- Netlify SPA configuration
 
-Highest poker-style dice hand wins:
+## Supabase setup
 
-1. Five of a Kind
-2. Four of a Kind
-3. Full House
-4. Royal Run — 2, 3, 4, 5, 6
-5. Low Run — 1, 2, 3, 4, 5
-6. Three of a Kind
-7. Two Pair
-8. Pair
-9. High Dice
+1. Create a Supabase project.
+2. Open SQL Editor.
+3. Run `supabase/setup.sql`.
+4. In Authentication settings, configure Email authentication as desired.
 
-## Stack
+## Local environment
 
-- React
-- Vite
-- Netlify
-- Supabase
-- Supabase Realtime
-- Supabase Anonymous Auth
-
-## Local development
-
-```bash
-npm install
-npm run dev
-```
-
-## Environment variables
-
-Copy `.env.example` to `.env`:
-
-```bash
-cp .env.example .env
-```
-
-Then add:
+Copy `.env.example` to `.env` and add:
 
 ```env
 VITE_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
 VITE_SUPABASE_ANON_KEY=YOUR_PUBLIC_ANON_OR_PUBLISHABLE_KEY
 ```
 
-Never place a Supabase service-role key in a `VITE_` variable.
+Never put a service-role/secret key in a `VITE_` variable.
 
-## Set up Supabase
+## Run
 
-1. Create a Supabase project.
-2. Enable Anonymous Sign-Ins under Authentication.
-3. Open SQL Editor.
-4. Run:
+```bash
+npm install
+npm run dev
+```
 
-`supabase/setup.sql`
+## Netlify
 
-That creates the First Dice room, member, game-state, and match-history database structure.
+Connect this GitHub repository to Netlify.
 
-## Deploy to Netlify from GitHub
-
-1. Push this repository to GitHub.
-2. In Netlify, choose **Add new project**.
-3. Choose **Import an existing project**.
-4. Connect GitHub.
-5. Select this repository.
-6. Netlify will use the included `netlify.toml`.
-
-Build settings:
+The included `netlify.toml` uses:
 
 ```text
 Build command: npm run build
 Publish directory: dist
 ```
 
-7. Add these Netlify environment variables:
+Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in Netlify environment variables.
 
-```text
-VITE_SUPABASE_URL
-VITE_SUPABASE_ANON_KEY
-```
+## Architecture
 
-8. Deploy.
+The browser does not generate official dice rolls. `roll_round()` in Supabase Postgres generates both five-dice hands, evaluates them, determines the winner, updates the room, records history, and updates career statistics when a match ends.
 
-## Important files
+The frontend subscribes to Supabase Realtime Postgres changes for the current room. This is a clean fit for a small-to-medium live game; if spectator concurrency becomes very large, migrate high-volume ephemeral events such as reactions to Supabase Broadcast.
 
-```text
-src/                  React app
-supabase/setup.sql    Supabase database setup
-public/_redirects     Netlify SPA fallback
-netlify.toml          Netlify build config
-.env.example          Required environment variables
-```
 
-## Production note
+## Security notes
 
-For competitive or prize-based play, keep dice generation and result calculation server-authoritative. The included Supabase SQL is designed to move those responsibilities into the database.
+- All official dice rolls and match results are generated inside the Supabase `roll_round()` RPC.
+- Browser clients cannot directly insert/update game state, match history, or career stats.
+- Room data is protected by RLS and a security-definer membership helper to avoid recursive policies.
+- Profiles / leaderboard stats are intentionally public-readable; profile edits require the authenticated owner RPC.
