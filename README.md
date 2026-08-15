@@ -4,7 +4,7 @@ React + Vite + Supabase + Netlify.
 
 ## Included
 
-- Username/password login and signup (email hidden internally)
+- First-visit name registration with persistent anonymous player identity
 - Persistent public player profiles
 - Public wins leaderboard
 - Career wins, losses, win rate, streaks, round stats and best hand
@@ -97,3 +97,48 @@ Authentication → Providers → Email → Confirm Email
 Otherwise Supabase will block immediate username/password login.
 
 Existing accounts that were created with real email addresses will not automatically map to the new username login scheme. Recreate those development accounts or migrate them separately.
+
+
+## First-visit identity
+
+Players no longer enter an email address or password.
+
+On first visit:
+1. The player chooses a display name.
+2. The browser creates a Supabase anonymous user.
+3. A permanent profile row is created for that user ID.
+4. Supabase stores the anonymous session in browser storage.
+5. Future visits on that browser restore the same profile and career stats automatically.
+
+Required Supabase setting:
+
+Authentication → Providers → Anonymous → Enable anonymous sign-ins
+
+### Persistence limitation
+
+The identity persists on the same browser/device as long as its site data remains intact.
+
+If the player clears browser storage, uses another browser/device, or loses the anonymous session, there is no password/email credential available to recover that identity. Their old public leaderboard stats remain in the database, but the browser will create a new player identity.
+
+For true cross-device account recovery later, add an optional account-upgrade flow.
+
+
+## Local player-name storage
+
+The player name no longer depends on Supabase.
+
+It is stored in browser `localStorage` under:
+
+`firstdice_player_name`
+
+That means:
+
+- The first-visit name screen works without Supabase.
+- Returning visitors on the same browser keep the same name.
+- Editing the profile name updates localStorage.
+- Clearing site/browser data removes the saved local name.
+- Switching browsers/devices does not automatically transfer the name.
+
+Supabase is now only needed for online multiplayer, persistent public stats, match history, and leaderboard functionality.
+
+The app can still create an anonymous Supabase session in the background when multiplayer is enabled, but that session is not used to remember the user's chosen display name.
