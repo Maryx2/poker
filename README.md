@@ -40,7 +40,7 @@ Copy `.env.example` to `.env` and add:
 
 ```env
 VITE_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
-VITE_SUPABASE_ANON_KEY=YOUR_PUBLIC_ANON_OR_PUBLISHABLE_KEY
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_YOUR_KEY
 ```
 
 Never put a service-role/secret key in a `VITE_` variable.
@@ -63,7 +63,7 @@ Build command: npm run build
 Publish directory: dist
 ```
 
-Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in Netlify environment variables.
+Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in Netlify environment variables.
 
 ## Architecture
 

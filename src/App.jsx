@@ -38,7 +38,7 @@ export default function App(){
   })
  },[session,profile])
 
- if(!configured)return <main className="config-error"><h1>First Dice</h1><p>Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your environment.</p></main>
+ if(!configured)return <main className="config-error"><h1>First Dice</h1><p>Add VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to your environment. Use an sb_publishable_... key, never sb_secret_....</p></main>
  if(!session)return <Auth/>
  if(!profile)return <div className="empty">Loading profile…</div>
 

@@ -6,7 +6,7 @@
 4. Select the repository.
 5. Add environment variables:
    - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_ANON_KEY`
+   - `VITE_SUPABASE_PUBLISHABLE_KEY`
 6. Deploy.
 
 The repo already includes `netlify.toml` and `public/_redirects`.
